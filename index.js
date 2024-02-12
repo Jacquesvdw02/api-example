@@ -1,5 +1,6 @@
 let map;
 let localContextMapView;
+let currentMarker;
 const styles = [
   {
     elementType: "labels.icon",
@@ -15,17 +16,16 @@ function initMap() {
   localContextMapView = new google.maps.localContext.LocalContextMapView({
     element: document.getElementById("map"),
     placeTypePreferences: [
-      { type: "gym", weight: 1 },
-      { type: "bank", weight: 1 },
-      { type: "cafe", weight: 2 },
-      { type: "department_store", weight: 1 },
-      // { type: "drugstore", weight: 1 },
-      { type: "park", weight: 3 },
-      { type: "restaurant", weight: 2 },
-      { type: "primary_school", weight: 3 },
-      { type: "secondary_school", weight: 3 },
-      { type: "supermarket", weight: 2 },
+      { type: "bank"},
+      { type: "cafe"},
+      { type: "department_store"},
+      { type: "park"},
+      { type: "restaurant"},
+      { type: "primary_school"},
+      { type: "secondary_school"},
+      { type: "supermarket"},
     ],
+    placeChooserViewSetup: {layoutMode: 'HIDDEN'},
     maxPlaceCount: 24,
   });
   map = localContextMapView.map;
@@ -34,53 +34,61 @@ function initMap() {
     zoom: 14,
     styles,
   });
-
-  // new google.maps.Marker({
-  //   position: { lat: -25.777807, lng: 28.256782 },
-  //   map: map,
-  //   icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAbUlEQVR4Ae3LoQ2AMAAF0TMYPJoV2IApGIJtmIMtmIAVqutraj6IiqZpmyYoCO/08R7bXbOOHSF2Ohr0HCh00EPdwImiTgYqRgxKMowUTFiUyTKRMeNQIcdMYsGjSp6FyIoaWkmoUuLxEPzDh1xIaLFFuTyHMgAAAABJRU5ErkJggg==",
-  //   zIndex: 30,
-  // });
-
-  // Build and add the Autocomplete search bar
+  makeMarker({ lat: -25.777807, lng: 28.256782 });
   const input = document.getElementById("input");
   const options = {
-    types: ["address"],
+    types: ["address" | "establishment"],
     componentRestrictions: {
       country: "za",
     },
     fields: ["address_components", "geometry", "name"],
   };
   const autocomplete = new google.maps.places.Autocomplete(input, options);
-
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-
     if (!place || !place.geometry) {
-      // User entered the name of a Place that was not suggested and
-      // pressed the Enter key, or the Place Details request failed.
       window.alert("No address available for that input.");
       return;
     }
-
-    // Recenter the map to the selected address
-    // marker.setMap(null);
     map.setOptions({
       center: place.geometry.location,
       zoom: 14,
     });
-    // Update the localContext directionsOptions origin
     localContextMapView.directionsOptions = {
       origin: place.geometry.location,
-    };
-    const marker = new google.maps.Marker({
-      position: place.geometry.location,
-      map: map,
-      icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAbUlEQVR4Ae3LoQ2AMAAF0TMYPJoV2IApGIJtmIMtmIAVqutraj6IiqZpmyYoCO/08R7bXbOOHSF2Ohr0HCh00EPdwImiTgYqRgxKMowUTFiUyTKRMeNQIcdMYsGjSp6FyIoaWkmoUuLxEPzDh1xIaLFFuTyHMgAAAABJRU5ErkJggg==",
-      zIndex: 30,
-    });
-    // update the results with new places
+    };   
+    makeMarker(place.geometry.location);
     localContextMapView.search();
+  });
+}
+
+// function find_closest_marker(markers) {
+//   alert(markers.length);
+//   var distances = [];
+//   var closest = -1;
+//   for (i = 0; i < markers.length; i++) {
+//     var d = google.maps.geometry.spherical.computeDistanceBetween(markers[i].position, event.latLng);
+//     distances[i] = d;
+//     if (closest == -1 || d < distances[closest]) {
+//       closest = i;
+//     }
+//   }
+//   // alert('Closest marker is: ' + markers[closest].getTitle());
+// }
+
+function makeMarker(location) {
+  const marker = new google.maps.Marker({
+    position: location,
+    map: map,
+    zIndex: 30,
+  });
+
+  if(currentMarker != null || currentMarker != undefined){
+    currentMarker.setMap(null);
+  }
+  currentMarker = marker;
+  marker.addListener("rightclick", () => {
+    
   });
 }
 
