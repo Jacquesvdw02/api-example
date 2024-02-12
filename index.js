@@ -62,20 +62,6 @@ function initMap() {
   });
 }
 
-// function find_closest_marker(markers) {
-//   alert(markers.length);
-//   var distances = [];
-//   var closest = -1;
-//   for (i = 0; i < markers.length; i++) {
-//     var d = google.maps.geometry.spherical.computeDistanceBetween(markers[i].position, event.latLng);
-//     distances[i] = d;
-//     if (closest == -1 || d < distances[closest]) {
-//       closest = i;
-//     }
-//   }
-//   // alert('Closest marker is: ' + markers[closest].getTitle());
-// }
-
 function makeMarker(location) {
   const marker = new google.maps.Marker({
     position: location,
