@@ -27,11 +27,12 @@ function initMap() {
     ],
     placeChooserViewSetup: {layoutMode: 'HIDDEN'},
     maxPlaceCount: 24,
+
   });
   map = localContextMapView.map;
   map.setOptions({
     center: { lat: -25.777807, lng: 28.256782 },
-    zoom: 14,
+    zoom: 18,
     styles,
   });
   makeMarker({ lat: -25.777807, lng: 28.256782 });

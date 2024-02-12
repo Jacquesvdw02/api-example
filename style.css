@@ -5,6 +5,15 @@
  #map {
     height: 100%;
   }
+
+  .check{
+    display: block;
+  }
+
+  .check-options{
+    display: inline-block;
+    border: 1px solid black;
+  }
   
   /* 
    * Optional: Makes the sample page fill the window. 
